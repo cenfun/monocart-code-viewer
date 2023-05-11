@@ -88,13 +88,15 @@ export const createCoverage = (coverage, extensions) => {
             for (let pos = from; pos <= to;) {
                 const line = view.state.doc.lineAt(pos);
                 const lineIndex = line.number - 1;
-                const v = currentCoverage.count[lineIndex];
-                if (v) {
-                    const deco = Decoration.widget({
-                        widget: createCounter(v.value),
-                        side: 1
+                const list = currentCoverage.count[lineIndex];
+                if (list) {
+                    list.forEach((v) => {
+                        const deco = Decoration.widget({
+                            widget: createCounter(v.value),
+                            side: 1
+                        });
+                        widgets.push(deco.range(line.from + v.column));
                     });
-                    widgets.push(deco.range(line.from + v.column));
                 }
                 pos = line.to + 1;
             }
@@ -116,9 +118,11 @@ export const createCoverage = (coverage, extensions) => {
             for (let pos = from; pos <= to;) {
                 const line = view.state.doc.lineAt(pos);
                 const lineIndex = line.number - 1;
-                const v = currentCoverage.bg[lineIndex];
-                if (v) {
-                    builder.add(line.from + v.start, line.from + v.end, uncoveredBg);
+                const list = currentCoverage.bg[lineIndex];
+                if (list) {
+                    list.forEach((v) => {
+                        builder.add(line.from + v.start, line.from + v.end, uncoveredBg);
+                    });
                 } else if (currentCoverage.line[lineIndex]) {
                     const offset = line.text.search(/\S/g);
                     const start = offset > 0 ? line.from + offset : line.from;
