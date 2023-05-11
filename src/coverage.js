@@ -100,7 +100,9 @@ export const createCoverage = (coverage, extensions) => {
                 if (v) {
                     builder.add(line.from + v.start, line.from + v.end, uncoveredBg);
                 } else if (currentCoverage.line[lineIndex]) {
-                    builder.add(line.from, line.to, uncoveredBg);
+                    const offset = line.text.search(/\S/g);
+                    const start = offset > 0 ? line.from + offset : line.from;
+                    builder.add(start, line.to, uncoveredBg);
                 }
                 pos = line.to + 1;
             }
