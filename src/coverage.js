@@ -2,8 +2,25 @@
 import { RangeSetBuilder } from '@codemirror/state';
 
 import {
-    gutter, GutterMarker, Decoration, ViewPlugin
+    gutter, GutterMarker, Decoration, ViewPlugin, WidgetType
 } from '@codemirror/view';
+
+const createPlugin = (handler) => {
+    return ViewPlugin.fromClass(class {
+
+        constructor(view) {
+            this.decorations = handler(view);
+        }
+
+        update(update) {
+            if (update.docChanged || update.viewportChanged) {
+                this.decorations = handler(update.view);
+            }
+        }
+    }, {
+        decorations: (v) => v.decorations
+    });
+};
 
 
 export const createCoverage = (coverage, extensions) => {
@@ -52,37 +69,40 @@ export const createCoverage = (coverage, extensions) => {
 
     extensions.push(coverageLine);
 
-
     // =====================================================================
 
-    const createCountMaker = (count) => {
-        const countMarker = new GutterMarker();
-        countMarker.elementClass = 'cm-line-count';
-        countMarker.count = count.value;
-        countMarker.toDOM = function() {
-            return document.createTextNode(`${this.count}x`);
+    const createCounter = (count) => {
+        const counter = new WidgetType();
+        counter.toDOM = function() {
+            const wrap = document.createElement('span');
+            wrap.className = 'cm-counter';
+            wrap.innerHTML = `x${count}`;
+            return wrap;
         };
-        return countMarker;
+        return counter;
     };
 
-    const coverageCount = gutter({
-        class: 'cm-coverage-count',
-        lineMarker(view, line) {
-            if (line.length === 0 || !currentCoverage.count) {
-                return null;
+    const coverageCount = createPlugin((view) => {
+        const widgets = [];
+        for (const { from, to } of view.visibleRanges) {
+            for (let pos = from; pos <= to;) {
+                const line = view.state.doc.lineAt(pos);
+                const lineIndex = line.number - 1;
+                const v = currentCoverage.count[lineIndex];
+                if (v) {
+                    const deco = Decoration.widget({
+                        widget: createCounter(v.value),
+                        side: 1
+                    });
+                    widgets.push(deco.range(line.from + v.column));
+                }
+                pos = line.to + 1;
             }
-            const lineIndex = Math.round(line.top / line.height);
-            // console.log('lineIndex', lineIndex);
-            const v = currentCoverage.count[lineIndex];
-            if (!v) {
-                return null;
-            }
-            return createCountMaker(v);
         }
+        return Decoration.set(widgets);
     });
 
     extensions.push(coverageCount);
-
 
     // =====================================================================
 
@@ -90,7 +110,7 @@ export const createCoverage = (coverage, extensions) => {
         class: 'cm-bg-uncovered'
     });
 
-    const getCoverageBg = (view) => {
+    const coverageBg = createPlugin((view) => {
         const builder = new RangeSetBuilder();
         for (const { from, to } of view.visibleRanges) {
             for (let pos = from; pos <= to;) {
@@ -108,21 +128,6 @@ export const createCoverage = (coverage, extensions) => {
             }
         }
         return builder.finish();
-    };
-
-    const coverageBg = ViewPlugin.fromClass(class {
-
-        constructor(view) {
-            this.decorations = getCoverageBg(view);
-        }
-
-        update(update) {
-            if (update.docChanged || update.viewportChanged) {
-                this.decorations = getCoverageBg(update.view);
-            }
-        }
-    }, {
-        decorations: (v) => v.decorations
     });
 
     extensions.push(coverageBg);

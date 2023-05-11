@@ -20,28 +20,23 @@ window.viewerData = {
         'count': {
             '2': {
                 'value': 334,
-                'start': 42,
-                'end': 52
+                'column': 19
             },
             '5': {
                 'value': 1002,
-                'start': 69,
-                'end': 254
+                'column': 17
             },
             '7': {
                 'value': 2,
-                'start': 126,
-                'end': 157
+                'column': 21
             },
             '10': {
                 'value': 334,
-                'start': 178,
-                'end': 203
+                'column': 25
             },
             '27': {
                 'value': 1000,
-                'start': 431,
-                'end': 455
+                'column': 39
             }
         }
     },
