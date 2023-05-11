@@ -1,44 +1,75 @@
 window.viewerData = {
     'coverage': {
-        'line': {
-            '23': 'partial',
-            '24': 'uncovered',
-            '25': 'uncovered',
-            '33': 'partial',
-            '34': 'uncovered'
+        'totalLines': 57,
+        'uncoveredLines': {
+            '3': 'uncovered',
+            '4': 'uncovered',
+            '18': 'partial',
+            '19': 'uncovered',
+            '20': 'uncovered',
+            '30': 'partial',
+            '31': 'uncovered',
+            '32': 'uncovered',
+            '39': 'partial',
+            '40': 'uncovered',
+            '41': 'uncovered'
         },
-        'bg': {
-            '23': {
-                'start': 22,
-                'end': 23
-            },
-            '33': {
-                'start': 15,
-                'end': 16
-            }
+        'uncoveredPieces': {
+            '18': [
+                {
+                    'start': 25,
+                    'end': 32
+                },
+                {
+                    'start': 27,
+                    'end': 32
+                }
+            ],
+            '30': [
+                {
+                    'start': 18,
+                    'end': 19
+                }
+            ],
+            '39': [
+                {
+                    'start': 11,
+                    'end': 12
+                }
+            ]
         },
-        'count': {
-            '2': {
-                'value': 334,
-                'column': 19
-            },
-            '5': {
-                'value': 1002,
-                'column': 17
-            },
-            '7': {
-                'value': 2,
-                'column': 21
-            },
-            '10': {
-                'value': 334,
-                'column': 25
-            },
-            '27': {
-                'value': 1000,
-                'column': 39
-            }
+        'executionCounts': {
+            '0': [
+                {
+                    'value': 334,
+                    'column': 0
+                }
+            ],
+            '6': [
+                {
+                    'value': 1002,
+                    'column': 0
+                }
+            ],
+            '8': [
+                {
+                    'value': 2,
+                    'column': 17
+                }
+            ],
+            '11': [
+                {
+                    'value': 334,
+                    'column': 21
+                }
+            ],
+            '34': [
+                {
+                    'value': 1000,
+                    'column': 35
+                }
+            ]
         }
     },
-    'content': 'window.onload = ()=>{\n\n    var callback = ()=>{\n    }\n\n    var mothod = (v)=>{\n        //console.log("mothod", v);\n        if (v === 2) {\n            console.log("2");\n        }\n        if (v % 3 === 0) {\n            callback();\n        }\n        if (v === 3) {\n            console.log(3);\n        }\n    }\n    var main = ()=>{\n        console.log("main");\n        mothod(1);\n        mothod(2);\n\n        var a = 10;\n        if (a === 11) {\n            callback();\n        }\n\n        for (var i = 0; i < 1000; i++) {\n            mothod(i);\n        }\n\n    }\n\n    if (false) {\n    }\n\n    main();\n\n}\n'
+    'content': "function callback() {\n}\n\nfunction other() {\n}\n\nfunction method(v) {\n    // console.log(\"method\", v);\n    if (v === 2) {\n        console.log(v);\n    }\n    if (v % 3 === 0) {\n        callback();\n    }\n    if (v === 3) {\n        console.log(v);\n    }\n\n    return v === 'other' ? ()=>{\n        console.log('never covered');\n    }\n    : other;\n}\n\nconst main = ()=>{\n    // console.log('main');\n    method(1);\n    method(2);\n\n    const a = 10;\n    if (a === 11) {\n        callback();\n    }\n\n    for (let i = 0; i < 1000; i++) {\n        method(i);\n    }\n\n    const f = false;\n    if (f) {\n        console.log('never covered');\n    }\n\n    const {compress, decompress} = window['lz-utils'];\n\n    const str = '📙 Emoji — 😃 💁👌🎍😍';\n\n    console.assert(str === decompress(compress(str)));\n\n}\n;\n\nwindow.onload = ()=>{\n    main();\n}\n;\n"
 };

@@ -30,9 +30,9 @@ export const createCoverage = (coverage, extensions) => {
     }
 
     // console.log(coverage);
-    // line
-    // count
-    // bg
+    // uncoveredLines: {},
+    // uncoveredPieces: {},
+    // executionCounts: {}
 
     let currentCoverage = coverage;
 
@@ -53,7 +53,7 @@ export const createCoverage = (coverage, extensions) => {
             }
             const lineIndex = Math.round(line.top / line.height);
             // console.log('lineIndex', lineIndex);
-            const v = currentCoverage.line[lineIndex];
+            const v = currentCoverage.uncoveredLines[lineIndex];
             if (v) {
                 if (v === 'partial') {
                     return partialMarker;
@@ -88,7 +88,7 @@ export const createCoverage = (coverage, extensions) => {
             for (let pos = from; pos <= to;) {
                 const line = view.state.doc.lineAt(pos);
                 const lineIndex = line.number - 1;
-                const list = currentCoverage.count[lineIndex];
+                const list = currentCoverage.executionCounts[lineIndex];
                 if (list) {
                     list.forEach((v) => {
                         const deco = Decoration.widget({
@@ -118,12 +118,12 @@ export const createCoverage = (coverage, extensions) => {
             for (let pos = from; pos <= to;) {
                 const line = view.state.doc.lineAt(pos);
                 const lineIndex = line.number - 1;
-                const list = currentCoverage.bg[lineIndex];
+                const list = currentCoverage.uncoveredPieces[lineIndex];
                 if (list) {
                     list.forEach((v) => {
                         builder.add(line.from + v.start, line.from + v.end, uncoveredBg);
                     });
-                } else if (currentCoverage.line[lineIndex]) {
+                } else if (currentCoverage.uncoveredLines[lineIndex]) {
                     const offset = line.text.search(/\S/g);
                     const start = offset > 0 ? line.from + offset : line.from;
                     builder.add(start, line.to, uncoveredBg);
