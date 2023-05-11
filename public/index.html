@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <link rel="icon" href="data:,">
+    <title>monocart-code-viewer</title>
+    <!--inject:start-->
+    <script src="../dist/monocart-code-viewer.js"></script>
+    <!--inject:end-->
+    <script src="./data.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        .container {
+            width: 60%;
+            height: 60%;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container"></div>
+    <script>
+        const { createCodeViewer } = window['monocart-code-viewer'];
+        createCodeViewer(document.querySelector('.container'), window.viewerData);
+    </script>
+</body>
+
+</html>
