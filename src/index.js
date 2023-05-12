@@ -17,6 +17,7 @@ import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
 
 import { javascript } from '@codemirror/lang-javascript';
 import { css } from '@codemirror/lang-css';
+import { html } from '@codemirror/lang-html';
 
 const readOnlyCompartment = new Compartment();
 
@@ -69,6 +70,7 @@ export const createCodeViewer = (container, report) => {
         basicSetup,
         javascript(),
         css(),
+        html(),
         readOnly
     ];
 
