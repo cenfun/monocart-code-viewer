@@ -10,7 +10,7 @@ import {
 
 import {
     defaultHighlightStyle, syntaxHighlighting, indentOnInput, bracketMatching,
-    foldGutter, foldKeymap
+    foldGutter, foldKeymap, LRLanguage, LanguageSupport
 } from '@codemirror/language';
 
 import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
@@ -19,11 +19,16 @@ import { javascript } from '@codemirror/lang-javascript';
 import { css } from '@codemirror/lang-css';
 import { html } from '@codemirror/lang-html';
 
+import { parser as htmlParser } from '@lezer/html';
+import { parser as jsParser } from '@lezer/javascript';
+import { parser as cssParser } from '@lezer/css';
+import { parseMixed } from '@lezer/common';
+
 const readOnlyCompartment = new Compartment();
 
 import { createCoverage } from './coverage.js';
 
-import './style.scss';
+// import './style.scss';
 
 export const createCodeViewer = (container, report) => {
 
@@ -66,11 +71,38 @@ export const createCodeViewer = (container, report) => {
 
     const readOnly = readOnlyCompartment.of(EditorState.readOnly.of(true));
 
+    const mixedHTMLParser = htmlParser.configure({
+        wrap: parseMixed((node) => {
+            if (node.name === 'StyleText') {
+                return {
+                    parser: cssParser
+                };
+            }
+
+            if (node.name === 'ScriptText') {
+                return {
+                    parser: jsParser
+                };
+            }
+
+            return null;
+        })
+    });
+
+    const mixedHTML = LRLanguage.define({
+        parser: mixedHTMLParser
+    });
+
+    const mixed = () => {
+        return new LanguageSupport(mixedHTML);
+    };
+
     const extensions = [
         basicSetup,
         javascript(),
         css(),
         html(),
+        mixed(),
         readOnly
     ];
 
