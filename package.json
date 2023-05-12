@@ -25,6 +25,7 @@
         "@lezer/css": "^1.1.1",
         "@lezer/html": "^1.3.4",
         "@lezer/javascript": "^1.4.3",
+        "@uiw/codemirror-theme-xcode": "^4.19.16",
         "codemirror": "^6.0.1",
         "eslint": "^8.40.0",
         "eslint-config-plus": "^1.0.6",

@@ -15,6 +15,8 @@ import {
 
 import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
 
+import { xcodeLight } from '@uiw/codemirror-theme-xcode';
+
 import { javascript } from '@codemirror/lang-javascript';
 import { css } from '@codemirror/lang-css';
 import { html } from '@codemirror/lang-html';
@@ -99,6 +101,7 @@ export const createCodeViewer = (container, report) => {
 
     const extensions = [
         basicSetup,
+        xcodeLight,
         javascript(),
         css(),
         html(),
