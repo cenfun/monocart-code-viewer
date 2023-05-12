@@ -28,7 +28,7 @@ const readOnlyCompartment = new Compartment();
 
 import { createCoverage } from './coverage.js';
 
-// import './style.scss';
+import './style.scss';
 
 export const createCodeViewer = (container, report) => {
 
