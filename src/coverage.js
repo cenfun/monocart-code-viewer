@@ -85,22 +85,28 @@ export const createCoverage = (coverage, extensions) => {
     const coverageCount = createPlugin((view) => {
         const widgets = [];
         for (const { from, to } of view.visibleRanges) {
+            // console.log('visibleRanges from/to', from, to);
             for (let pos = from; pos <= to;) {
                 const line = view.state.doc.lineAt(pos);
                 const lineIndex = line.number - 1;
+                // console.log('line index', lineIndex);
                 const list = currentCoverage.executionCounts[lineIndex];
                 if (list) {
                     list.forEach((v) => {
-                        const deco = Decoration.widget({
-                            widget: createCounter(v.value),
-                            side: 1
-                        });
-                        widgets.push(deco.range(line.from + v.column));
+                        const offset = line.from + v.column;
+                        if (offset >= from && offset <= to) {
+                            const deco = Decoration.widget({
+                                widget: createCounter(v.value),
+                                side: 1
+                            });
+                            widgets.push(deco.range(offset));
+                        }
                     });
                 }
                 pos = line.to + 1;
             }
         }
+        // console.log('widgets', widgets);
         return Decoration.set(widgets);
     });
 
@@ -115,13 +121,19 @@ export const createCoverage = (coverage, extensions) => {
     const coverageBg = createPlugin((view) => {
         const builder = new RangeSetBuilder();
         for (const { from, to } of view.visibleRanges) {
+            // console.log('visibleRanges from/to', from, to);
             for (let pos = from; pos <= to;) {
                 const line = view.state.doc.lineAt(pos);
                 const lineIndex = line.number - 1;
+                // console.log('line index', lineIndex);
                 const list = currentCoverage.uncoveredPieces[lineIndex];
                 if (list) {
                     list.forEach((v) => {
-                        builder.add(line.from + v.start, line.from + v.end, uncoveredBg);
+                        const s = line.from + v.start;
+                        const e = line.from + v.end;
+                        if (s >= from && e <= to) {
+                            builder.add(s, e, uncoveredBg);
+                        }
                     });
                 } else if (currentCoverage.uncoveredLines[lineIndex]) {
                     const offset = line.text.search(/\S/g);
