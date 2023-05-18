@@ -65,14 +65,18 @@
         border-radius: 3px;
         background-color: #e6f5d0;
         user-select: none;
-        pointer-events: none;
     }
 
-    .cm-bg-covered {
+    .cm-counter:hover {
+        border: 1px solid #3e9723;
+        background-color: #d0eba8;
+    }
+
+    .cm-highlight-bg {
         background: #e6f5d0;
     }
 
-    .cm-bg-uncovered {
+    .cm-uncovered-bg {
         background: #fce1e5;
     }
 }
