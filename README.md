@@ -10,9 +10,9 @@ let codeViewer;
 const report = {
     content: "",
     coverage: {
-        line,
-        bg,
-        count
+        uncoveredLines: {},
+        uncoveredPieces: {},
+        executionCounts: {}
     }
 };
 
