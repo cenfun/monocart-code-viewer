@@ -249,26 +249,39 @@ export const createCoverage = (coverage, extensions) => {
 
     const coverageBg = createPlugin((view) => {
         const builder = new RangeSetBuilder();
+
+        const checkLine = (line, from, to) => {
+
+            const lineIndex = line.number - 1;
+            // console.log('line index', lineIndex);
+
+            const list = currentCoverage.uncoveredPieces[lineIndex];
+            if (list) {
+                list.forEach((v) => {
+                    const s = line.from + v.start;
+                    const e = line.from + v.end;
+                    if (s >= from && e <= to) {
+                        builder.add(s, e, uncoveredBg);
+                    }
+                });
+                return;
+            }
+
+            const uncoveredType = currentCoverage.uncoveredLines[lineIndex];
+            if (uncoveredType === 'uncovered') {
+                const offset = line.text.search(/\S/g);
+                const start = offset > 0 ? line.from + offset : line.from;
+                builder.add(start, line.to, uncoveredBg);
+            }
+
+        };
+
+
         for (const { from, to } of view.visibleRanges) {
             // console.log('visibleRanges from/to', from, to);
             for (let pos = from; pos <= to;) {
                 const line = view.state.doc.lineAt(pos);
-                const lineIndex = line.number - 1;
-                // console.log('line index', lineIndex);
-                const list = currentCoverage.uncoveredPieces[lineIndex];
-                if (list) {
-                    list.forEach((v) => {
-                        const s = line.from + v.start;
-                        const e = line.from + v.end;
-                        if (s >= from && e <= to) {
-                            builder.add(s, e, uncoveredBg);
-                        }
-                    });
-                } else if (currentCoverage.uncoveredLines[lineIndex]) {
-                    const offset = line.text.search(/\S/g);
-                    const start = offset > 0 ? line.from + offset : line.from;
-                    builder.add(start, line.to, uncoveredBg);
-                }
+                checkLine(line, from, to);
                 pos = line.to + 1;
             }
         }
