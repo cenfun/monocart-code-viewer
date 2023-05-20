@@ -3,7 +3,7 @@ import { EditorView } from 'codemirror';
 import { EditorState, Compartment } from '@codemirror/state';
 
 import {
-    keymap, highlightSpecialChars, drawSelection, highlightActiveLine, dropCursor,
+    keymap, highlightSpecialChars, drawSelection, dropCursor,
     rectangularSelection, crosshairCursor,
     lineNumbers, highlightActiveLineGutter
 } from '@codemirror/view';
@@ -25,8 +25,6 @@ import { parser as htmlParser } from '@lezer/html';
 import { parser as jsParser } from '@lezer/javascript';
 import { parser as cssParser } from '@lezer/css';
 import { parseMixed } from '@lezer/common';
-
-const readOnlyCompartment = new Compartment();
 
 import { createCoverage } from './coverage.js';
 
@@ -61,7 +59,7 @@ export const createCodeViewer = (container, report) => {
 
         rectangularSelection(),
         crosshairCursor(),
-        highlightActiveLine(),
+
         highlightSelectionMatches(),
         keymap.of([
             ... searchKeymap,
@@ -71,7 +69,18 @@ export const createCodeViewer = (container, report) => {
 
     // =====================================================================
 
-    const readOnly = readOnlyCompartment.of(EditorState.readOnly.of(true));
+    const isTouchDevice = function() {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0;
+    };
+
+    // readOnly facet, on the state, which controls whether the content is supposed to be read-only (and is respected by commands and such).
+    // editable facet, which only controls whether the DOM for the content is focusable/editable.
+    const readOnlyCompartment = new Compartment();
+    let readOnly = readOnlyCompartment.of(EditorState.readOnly.of(true));
+    if (isTouchDevice()) {
+        // do not popup keyboard in mobile
+        readOnly = EditorView.editable.of(false);
+    }
 
     const mixedHTMLParser = htmlParser.configure({
         wrap: parseMixed((node) => {
