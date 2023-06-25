@@ -32,9 +32,6 @@ export const createCoverage = (coverage, extensions) => {
     }
 
     // console.log(coverage);
-    // uncoveredLines: {},
-    // uncoveredPieces: {},
-    // executionCounts: {}
 
     let currentCoverage = coverage;
 
@@ -253,16 +250,25 @@ export const createCoverage = (coverage, extensions) => {
         const checkLine = (line, from, to) => {
 
             const lineIndex = line.number - 1;
-            // console.log('line index', lineIndex);
+            // console.log('line', line, from, to);
 
-            const list = currentCoverage.uncoveredPieces[lineIndex];
-            if (list) {
-                list.forEach((v) => {
-                    const s = line.from + v.start;
-                    const e = line.from + v.end;
-                    if (s >= from && e <= to) {
-                        builder.add(s, e, uncoveredBg);
+            const lineRanges = currentCoverage.uncoveredPieces[lineIndex];
+            if (lineRanges) {
+                // a line have multiple ranges
+                lineRanges.forEach((range) => {
+                    // large range
+                    // range {start: 4798, end: 194624}
+                    let s = line.from + range.start;
+                    let e = line.from + range.end;
+                    if (s > to || e < from) {
+                        return;
                     }
+
+                    s = Math.max(s, from);
+                    e = Math.min(e, to);
+
+                    builder.add(s, e, uncoveredBg);
+
                 });
                 return;
             }
