@@ -1,6 +1,6 @@
 {
     "name": "monocart-code-viewer",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "Monocart Code Viewer",
     "main": "dist/monocart-code-viewer.js",
     "scripts": {
