@@ -4,6 +4,7 @@
     "description": "Monocart Code Viewer",
     "main": "dist/monocart-code-viewer.js",
     "scripts": {
+        "dev": "sf d",
         "build": "sf lint && sf b -p patch",
         "patch": "npm run build && sf publish patch"
     },
