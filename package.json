@@ -4,7 +4,7 @@
     "description": "Monocart Code Viewer",
     "main": "dist/monocart-code-viewer.js",
     "scripts": {
-        "build": "sf lint && sf b -p",
+        "build": "sf lint && sf b -p patch",
         "patch": "npm run build && sf publish patch"
     },
     "files": [
@@ -20,11 +20,11 @@
         "@codemirror/lang-css": "^6.2.1",
         "@codemirror/lang-html": "^6.4.7",
         "@codemirror/lang-javascript": "^6.2.1",
-        "@codemirror/view": "^6.22.1",
-        "@lezer/common": "^1.1.1",
+        "@codemirror/view": "^6.22.3",
+        "@lezer/common": "^1.1.2",
         "@lezer/css": "^1.1.4",
         "@lezer/html": "^1.3.7",
-        "@lezer/javascript": "^1.4.9",
+        "@lezer/javascript": "^1.4.10",
         "@uiw/codemirror-theme-xcode": "^4.21.21",
         "codemirror": "^6.0.1",
         "eslint": "^8.55.0",

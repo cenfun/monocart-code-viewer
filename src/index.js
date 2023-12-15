@@ -149,3 +149,9 @@ export const createCodeViewer = (container, report) => {
 
 };
 
+export default createCodeViewer;
+
+export const TAG = {
+    VERSION: window.VERSION,
+    TIMESTAMP: window.TIMESTAMP
+};
