@@ -1,6 +1,8 @@
 import { EditorView } from 'codemirror';
 
-import { EditorState, Compartment } from '@codemirror/state';
+import {
+    EditorState, Compartment, EditorSelection
+} from '@codemirror/state';
 
 import {
     keymap, highlightSpecialChars, drawSelection, dropCursor,
@@ -13,7 +15,7 @@ import {
     foldGutter, foldKeymap, LRLanguage, LanguageSupport
 } from '@codemirror/language';
 
-import { searchKeymap, highlightSelectionMatches } from '@codemirror/search';
+import { searchKeymap } from '@codemirror/search';
 
 import { xcodeLight } from '@uiw/codemirror-theme-xcode';
 
@@ -60,7 +62,6 @@ export const createCodeViewer = (container, report) => {
         rectangularSelection(),
         crosshairCursor(),
 
-        highlightSelectionMatches(),
         keymap.of([
             ... searchKeymap,
             ... foldKeymap
@@ -108,6 +109,40 @@ export const createCodeViewer = (container, report) => {
         return new LanguageSupport(mixedHTML);
     };
 
+
+    // simple event handlers
+    const handlers = {
+        cursor: (loc) => {}
+    };
+
+    let cursorPosition;
+    const onCursorChange = EditorView.updateListener.of((v) => {
+        if (!v.selectionSet) {
+            return;
+        }
+        const state = v.state;
+
+        // for the head of the main selection range
+        const range = state.selection.main;
+
+        const position = range.head;
+        if (position === cursorPosition) {
+            return;
+        }
+        cursorPosition = position;
+
+        const line = state.doc.lineAt(position);
+
+        const loc = {
+            line: line.number,
+            column: range.head - line.from,
+            position
+        };
+
+        handlers.cursor(loc);
+
+    });
+
     const extensions = [
         basicSetup,
         xcodeLight,
@@ -115,6 +150,7 @@ export const createCodeViewer = (container, report) => {
         css(),
         html(),
         mixed(),
+        onCursorChange,
         readOnly
     ];
 
@@ -128,6 +164,28 @@ export const createCodeViewer = (container, report) => {
 
     return {
         viewer,
+        on: (type, handler) => {
+            if (type && typeof handler === 'function') {
+                handlers[type] = handler;
+            }
+        },
+        setSelection: (start, end) => {
+
+            viewer.focus();
+
+            viewer.dispatch({
+                effects: EditorView.scrollIntoView(start, {
+                    x: 'start',
+                    y: 'start',
+                    xMargin: 5,
+                    yMargin: 5
+                }),
+                selection: EditorSelection.create([
+                    EditorSelection.range(start, end)
+                ])
+            });
+
+        },
         update: (newReport) => {
 
             if (coverageExtension) {

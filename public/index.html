@@ -22,14 +22,74 @@
             height: 90%;
             border: 1px solid #ccc;
         }
+
+        .cursor {
+            padding: 5px;
+        }
+
+        .executions {
+            padding: 5px;
+        }
+
+        .executions span {
+            margin-right: 10px;
+            padding: 0 3px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            cursor: pointer;
+        }
     </style>
 </head>
 
 <body>
     <div class="container"></div>
+    <div class="cursor"></div>
+    <div class="executions"></div>
     <script>
         const { createCodeViewer } = window['monocart-code-viewer'];
-        createCodeViewer(document.querySelector('.container'), window.viewerData);
+        const codeViewer = createCodeViewer(document.querySelector('.container'), window.viewerData);
+        codeViewer.on('cursor', (loc) => {
+            // console.log('cursor', loc);
+            document.querySelector('.cursor').innerHTML = Object.keys(loc).map((k) => `${k}:${loc[k]}`);
+        });
+
+        const cm = codeViewer.viewer;
+
+        console.log(window.viewerData);
+
+        const $executions = document.querySelector('.executions');
+        $executions.addEventListener('click', (e) => {
+            if (e.target.nodeName !== 'SPAN') {
+                return;
+            }
+
+            const [line, column, end] = e.target.innerHTML.split(',').map((v) => parseInt(v));
+            //  console.log('goto', line, column, end);
+
+            const lineInfo = cm.state.doc.line(line);
+
+            const start = lineInfo.from + column;
+            // console.log(start);
+
+            //  console.log('loc', start, end);
+
+            codeViewer.setSelection(start, end);
+
+        });
+
+        const executionCounts = window.viewerData.coverage.executionCounts;
+        Object.keys(executionCounts).forEach((lineIndex) => {
+            lineIndex = parseInt(lineIndex);
+            const list = executionCounts[lineIndex];
+            list.forEach((item) => {
+                // console.log(lineIndex, item);
+                const span = document.createElement('span');
+                span.innerHTML = `${lineIndex + 1},${item.column},${item.end}`;
+
+                $executions.appendChild(span);
+            });
+        });
+
     </script>
 </body>
 
