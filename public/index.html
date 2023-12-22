@@ -18,8 +18,8 @@
         }
 
         .container {
-            width: 60%;
-            height: 90%;
+            width: 30%;
+            height: 80%;
             border: 1px solid #ccc;
         }
 
@@ -27,11 +27,11 @@
             padding: 5px;
         }
 
-        .executions {
+        .buttons {
             padding: 5px;
         }
 
-        .executions span {
+        .buttons span {
             margin-right: 10px;
             padding: 0 3px;
             border: 1px solid #ccc;
@@ -43,8 +43,9 @@
 
 <body>
     <div class="container"></div>
+    <div class="executions buttons"></div>
+    <div class="positions buttons"></div>
     <div class="cursor"></div>
-    <div class="executions"></div>
     <script>
         const { createCodeViewer } = window['monocart-code-viewer'];
         const codeViewer = createCodeViewer(document.querySelector('.container'), window.viewerData);
@@ -58,23 +59,20 @@
         console.log(window.viewerData);
 
         const $executions = document.querySelector('.executions');
+        const $positions = document.querySelector('.positions');
         $executions.addEventListener('click', (e) => {
             if (e.target.nodeName !== 'SPAN') {
                 return;
             }
-
-            const [line, column, end] = e.target.innerHTML.split(',').map((v) => parseInt(v));
-            //  console.log('goto', line, column, end);
-
-            const lineInfo = cm.state.doc.line(line);
-
-            const start = lineInfo.from + column;
-            // console.log(start);
-
-            //  console.log('loc', start, end);
-
+            const [start, end] = e.target.innerHTML.split(',').map((v) => parseInt(v));
             codeViewer.setSelection(start, end);
-
+        });
+        $positions.addEventListener('click', (e) => {
+            if (e.target.nodeName !== 'SPAN') {
+                return;
+            }
+            const pos = parseInt(e.target.innerHTML);
+            codeViewer.setCursor(pos);
         });
 
         const executionCounts = window.viewerData.coverage.executionCounts;
@@ -83,10 +81,18 @@
             const list = executionCounts[lineIndex];
             list.forEach((item) => {
                 // console.log(lineIndex, item);
-                const span = document.createElement('span');
-                span.innerHTML = `${lineIndex + 1},${item.column},${item.end}`;
+                const lineInfo = cm.state.doc.line(lineIndex + 1);
+                const start = lineInfo.from + item.column;
 
-                $executions.appendChild(span);
+                const span1 = document.createElement('span');
+                span1.innerHTML = `${start},${item.end}`;
+                $executions.appendChild(span1);
+
+                const span2 = document.createElement('span');
+                span2.innerHTML = start;
+                $positions.appendChild(span2);
+
+
             });
         });
 

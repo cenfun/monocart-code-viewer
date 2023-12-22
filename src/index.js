@@ -169,22 +169,35 @@ export const createCodeViewer = (container, report) => {
                 handlers[type] = handler;
             }
         },
-        setSelection: (start, end) => {
-
+        setSelection: (start, end, options) => {
             viewer.focus();
-
             viewer.dispatch({
                 effects: EditorView.scrollIntoView(start, {
-                    x: 'start',
+                    x: 'center',
                     y: 'start',
                     xMargin: 5,
-                    yMargin: 5
+                    yMargin: 5,
+                    ... options
                 }),
                 selection: EditorSelection.create([
                     EditorSelection.range(start, end)
                 ])
             });
-
+        },
+        setCursor: (pos, options) => {
+            viewer.focus();
+            viewer.dispatch({
+                effects: EditorView.scrollIntoView(pos, {
+                    x: 'center',
+                    y: 'start',
+                    xMargin: 5,
+                    yMargin: 5,
+                    ... options
+                }),
+                selection: EditorSelection.create([
+                    EditorSelection.cursor(pos)
+                ])
+            });
         },
         update: (newReport) => {
 
