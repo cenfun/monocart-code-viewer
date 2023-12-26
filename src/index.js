@@ -180,6 +180,7 @@ export const createCodeViewer = (container, report) => {
                     ... options
                 }),
                 selection: EditorSelection.create([
+                    EditorSelection.cursor(start),
                     EditorSelection.range(start, end)
                 ])
             });
