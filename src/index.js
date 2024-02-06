@@ -28,7 +28,7 @@ import { parser as jsParser } from '@lezer/javascript';
 import { parser as cssParser } from '@lezer/css';
 import { parseMixed } from '@lezer/common';
 
-import { createCoverage } from './coverage.js';
+import { createCoverage } from './coverage/coverage.js';
 
 import './style.scss';
 

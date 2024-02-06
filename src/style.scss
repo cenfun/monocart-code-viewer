@@ -70,10 +70,20 @@
     }
 
     .cm-highlight-bg {
-        background: rgb(189 250 91 / 30%);
+        background-color: rgb(189 250 91 / 30%);
     }
 
     .cm-uncovered-bg {
-        background: rgb(248 141 141 / 30%);
+        background-color: rgb(248 141 141 / 30%);
+    }
+
+    .cm-decoration {
+        padding: 0 3px;
+        color: #fff;
+        font-size: 12px;
+        border: 1px solid #c00;
+        border-radius: 3px;
+        background-color: red;
+        user-select: none;
     }
 }
