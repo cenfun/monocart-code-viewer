@@ -12,7 +12,8 @@ const report = {
     coverage: {
         uncoveredLines: {},
         uncoveredPieces: {},
-        executionCounts: {}
+        executionCounts: {},
+        decorations: {}
     }
 };
 
