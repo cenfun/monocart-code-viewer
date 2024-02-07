@@ -17,7 +17,9 @@ const coverageLine = gutter({
         }
         const lineIndex = Math.round(line.top / line.height);
         // console.log('lineIndex', lineIndex);
-        const v = state.coverage.uncoveredLines[lineIndex];
+
+        const uncoveredLines = state.uncoveredLines || {};
+        const v = uncoveredLines[lineIndex];
         if (v) {
             if (v === 'partial') {
                 return partialMarker;

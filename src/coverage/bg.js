@@ -18,7 +18,8 @@ const coverageBg = createPlugin((view) => {
         const lineIndex = line.number - 1;
         // console.log('line', line, from, to);
 
-        const lineRanges = state.coverage.uncoveredPieces[lineIndex];
+        const uncoveredPieces = state.uncoveredPieces || {};
+        const lineRanges = uncoveredPieces[lineIndex];
         if (lineRanges) {
             // a line have multiple ranges
             lineRanges.forEach((range) => {
@@ -39,7 +40,8 @@ const coverageBg = createPlugin((view) => {
             return;
         }
 
-        const uncoveredType = state.coverage.uncoveredLines[lineIndex];
+        const uncoveredLines = state.uncoveredLines || {};
+        const uncoveredType = uncoveredLines[lineIndex];
         if (uncoveredType === 'uncovered') {
             const offset = line.text.search(/\S/g);
             const start = offset > 0 ? line.from + offset : line.from;

@@ -8,12 +8,12 @@ import coverageBg from './bg.js';
 
 export const createCoverage = (coverage, extensions) => {
 
+    // no coverage extension API {update()}
     if (!coverage) {
         return;
     }
 
-    state.coverage = coverage;
-
+    Object.assign(state, coverage);
     extensions.push(coverageLine);
     extensions.push(highlightRange);
     extensions.push(coverageCounter);
@@ -23,10 +23,10 @@ export const createCoverage = (coverage, extensions) => {
     return {
         update: (newCoverage) => {
             if (!newCoverage) {
+                console.log('Invalid coverage data');
                 return;
             }
-
-            state.coverage = newCoverage;
+            Object.assign(state, newCoverage);
         }
     };
 };

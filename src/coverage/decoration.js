@@ -33,13 +33,14 @@ const createDecoration = (item) => {
 
 const coverageDecoration = createPlugin((view) => {
     const widgets = [];
+    const decorations = state.decorations || {};
     for (const { from, to } of view.visibleRanges) {
         // console.log('visibleRanges from/to', from, to);
         for (let pos = from; pos <= to;) {
             const line = view.state.doc.lineAt(pos);
             const lineIndex = line.number - 1;
             // console.log('line index', lineIndex);
-            const list = state.coverage.decorations[lineIndex];
+            const list = decorations[lineIndex];
             if (list) {
                 list.forEach((v, index) => {
                     const offset = line.from + v.column;
@@ -55,7 +56,8 @@ const coverageDecoration = createPlugin((view) => {
             pos = line.to + 1;
         }
     }
-    // console.log('widgets', widgets);
+    // Ranges must be added sorted by `from` position and `startSide`
+    // console.log('widgets', decorations, widgets);
     return Decoration.set(widgets);
 });
 

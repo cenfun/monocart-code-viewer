@@ -13,11 +13,11 @@ const counterEventHandler = (e, view, hover) => {
     }
 
     const index = target.getAttribute('index');
-
+    const executionCounts = state.executionCounts || {};
     const pos = view.posAtDOM(target);
     const line = view.state.doc.lineAt(pos);
     const lineIndex = line.number - 1;
-    const list = state.coverage.executionCounts[lineIndex];
+    const list = executionCounts[lineIndex];
     if (!list) {
         return;
     }
@@ -56,13 +56,15 @@ const createCounter = (count, index) => {
 
 const coverageCounter = createPlugin((view) => {
     const widgets = [];
+
+    const executionCounts = state.executionCounts || {};
     for (const { from, to } of view.visibleRanges) {
         // console.log('visibleRanges from/to', from, to);
         for (let pos = from; pos <= to;) {
             const line = view.state.doc.lineAt(pos);
             const lineIndex = line.number - 1;
             // console.log('line index', lineIndex);
-            const list = state.coverage.executionCounts[lineIndex];
+            const list = executionCounts[lineIndex];
             if (list) {
                 list.forEach((v, index) => {
                     const offset = line.from + v.column;
