@@ -11,11 +11,14 @@ uncoveredMarker.elementClass = 'cm-line-uncovered';
 
 const coverageLine = gutter({
     class: 'cm-coverage-line',
-    lineMarker(view, line) {
-        if (line.length === 0) {
+    lineMarker(view, blockInfo) {
+        if (blockInfo.length === 0) {
             return null;
         }
-        const lineIndex = Math.round(line.top / line.height);
+
+        const line = view.state.doc.lineAt(blockInfo.from);
+        const lineNumber = line.number;
+        const lineIndex = lineNumber - 1;
         // console.log('lineIndex', lineIndex);
 
         const uncoveredLines = state.uncoveredLines || {};
