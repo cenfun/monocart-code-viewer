@@ -51,7 +51,7 @@
         const codeViewer = createCodeViewer(document.querySelector('.container'), window.viewerData);
         codeViewer.on('cursor', (loc) => {
             // console.log('cursor', loc);
-            document.querySelector('.cursor').innerHTML = Object.keys(loc).map((k) => `${k}:${loc[k]}`);
+            document.querySelector('.cursor').innerHTML = Object.keys(loc).map((k) => `${k}: ${loc[k]}`).join(', ');
         });
 
         const cm = codeViewer.viewer;

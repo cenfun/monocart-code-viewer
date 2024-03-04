@@ -115,7 +115,8 @@ export const createCodeViewer = (container, report) => {
         cursor: (loc) => {}
     };
 
-    let cursorPosition;
+    let previousHead;
+    let previousRange = {};
     const onCursorChange = EditorView.updateListener.of((v) => {
         if (!v.selectionSet) {
             return;
@@ -123,21 +124,40 @@ export const createCodeViewer = (container, report) => {
         const state = v.state;
 
         // for the head of the main selection range
-        const range = state.selection.main;
+        const {
+            main, mainIndex, ranges
+        } = state.selection;
 
-        const position = range.head;
-        if (position === cursorPosition) {
-            return;
+        const range = ranges.find((it, i) => i !== mainIndex);
+
+        const head = main.head;
+        if (head === previousHead) {
+            // only main, just check head
+            if (!range) {
+                return;
+            }
+
+            // multiple ranges, checking range start and end
+            if (range.from === previousRange.from && range.to === previousRange.to) {
+                return;
+            }
+
         }
-        cursorPosition = position;
+        previousHead = head;
+        previousRange = range || {};
 
-        const line = state.doc.lineAt(position);
+        const line = state.doc.lineAt(head);
 
         const loc = {
             line: line.number,
-            column: range.head - line.from,
-            position
+            column: head - line.from,
+            position: head
         };
+
+        if (range) {
+            loc.start = range.from;
+            loc.end = range.to;
+        }
 
         handlers.cursor(loc);
 
