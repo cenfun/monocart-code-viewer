@@ -17,35 +17,56 @@
             margin: 0;
         }
 
+        .main {
+            display: flex;
+            flex-direction: row;
+            width: 100%;
+            height: 100%;
+        }
+
         .container {
-            width: 30%;
+            position: relative;
+            display: block;
+            width: 50%;
             height: 80%;
             border: 1px solid #ccc;
         }
 
-        .cursor {
-            padding: 5px;
+        .tools {
+            position: relative;
+            display: block;
+            width: 50%;
         }
 
         .buttons {
-            padding: 5px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px;
         }
 
         .buttons span {
-            margin-right: 10px;
             padding: 0 3px;
             border: 1px solid #ccc;
             border-radius: 3px;
             cursor: pointer;
         }
+
+        .cursor {
+            padding: 5px;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container"></div>
-    <div class="executions buttons"></div>
-    <div class="positions buttons"></div>
-    <div class="cursor"></div>
+    <div class="main">
+        <div class="container"></div>
+        <div class="tools">
+            <div class="executions buttons"></div>
+            <div class="positions buttons"></div>
+            <div class="cursor"></div>
+        </div>
+    </div>
     <script>
         const { createCodeViewer } = window['monocart-code-viewer'];
         const codeViewer = createCodeViewer(document.querySelector('.container'), window.viewerData);
