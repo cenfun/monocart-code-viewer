@@ -1,8 +1,8 @@
 // starfall-cli config
 // https://github.com/cenfun/starfall-cli
 
-// const fs = require('fs');
-// const path = require('path');
+const fs = require('fs');
+const path = require('path');
 
 module.exports = {
 
@@ -22,6 +22,9 @@ module.exports = {
 
         after: (item, Util) => {
             // console.log('after build');
+
+            fs.writeFileSync(path.resolve(__dirname, '../dist/monocart-code-viewer.d.ts'), fs.readFileSync(path.resolve(__dirname, '../src/index.d.ts')));
+
             return 0;
         }
 

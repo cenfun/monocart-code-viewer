@@ -3,6 +3,14 @@
     "version": "1.1.2",
     "description": "Monocart Code Viewer",
     "main": "dist/monocart-code-viewer.js",
+    "exports": {
+        ".": {
+            "types": "./dist/monocart-code-viewer.d.ts",
+            "default": "./dist/monocart-code-viewer.js"
+        },
+        "./package.json": "./package.json"
+    },
+    "types": "./dist/monocart-code-viewer.d.ts",
     "scripts": {
         "dev": "sf d",
         "build": "sf lint && sf b -p patch",
