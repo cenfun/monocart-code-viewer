@@ -1,5 +1,8 @@
 ## Changelog
 
+* 1.1.4
+    - added title for hits
+
 * 1.1.3
     - added types
 
