@@ -38,13 +38,14 @@ const counterEventHandler = (e, view, hover) => {
     });
 };
 
-const createCounter = (count, index) => {
+const createCounter = (data, index) => {
     const counter = new WidgetType();
     counter.toDOM = function() {
         const wrap = document.createElement('span');
         wrap.className = 'cm-counter';
         wrap.setAttribute('index', index);
-        wrap.innerHTML = `x${count}`;
+        wrap.setAttribute('title', `${Number(data.count).toLocaleString()} hits`);
+        wrap.innerHTML = `x${data.value}`;
         return wrap;
     };
     counter.ignoreEvent = () => {
@@ -70,7 +71,7 @@ const coverageCounter = createPlugin((view) => {
                     const offset = line.from + v.column;
                     if (offset >= from && offset <= to) {
                         const deco = Decoration.widget({
-                            widget: createCounter(v.value, index),
+                            widget: createCounter(v, index),
                             side: 1
                         });
                         widgets.push(deco.range(offset));
